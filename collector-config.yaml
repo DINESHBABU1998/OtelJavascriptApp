@@ -23,7 +23,7 @@ exporters:
   otlphttp:
     endpoint: "https://otlp.nr-data.net"
     headers:
-      api-key: "062019414e798961c7030d99ed430482FFFFNRAL"
+      api-key: "xxxxxxxxxxxxxxxxxxxx"
 
   prometheus:
     endpoint: "0.0.0.0:9122"
