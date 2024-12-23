@@ -1,0 +1,51 @@
+receivers:
+# prometheus receiver configuration for scraping metrics from the opentelemetry collector itself
+  prometheus:
+    config:
+      scrape_configs:
+        - job_name: "otelcol"
+          scrape_interval: 10s
+          static_configs:
+            - targets: ["0.0.0.0:8888"]
+# OTLP receiver configuration for accepting traces, metrics and logs via gRPC and HTTP 
+  otlp:
+    protocols:
+      grpc:
+        endpoint: 0.0.0.0:4317
+      http:
+        endpoint: 0.0.0.0:4318
+
+processors:
+  batch:
+
+exporters:
+
+  otlphttp:
+    endpoint: "https://otlp.nr-data.net"
+    headers:
+      api-key: "062019414e798961c7030d99ed430482FFFFNRAL"
+
+  prometheus:
+    endpoint: "0.0.0.0:9122"
+
+# essential monitoring and debugging capabilities
+extensions:
+  health_check: # simple health monitoring capabilities and status reporting
+  pprof: # performance profiling of collectors runtime
+  zpages: # quite powerful and allows you to see some diagnostic web pages which shows real time data about collectors operations
+
+service:
+  extensions: [health_check, pprof, zpages]
+  pipelines:
+    traces:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [otlphttp]
+    metrics:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [otlphttp, prometheus]
+    logs:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [otlphttp]
